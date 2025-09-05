@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<>
+<head>
+    <tile>
+        Quiz Result
+    </tile>
+</head>
+<body>
+<p>Your Score:{{score}}/{{total}}</p>
+{% if score==tota %}
+    <h2>Perfect Score</h2>
+{% elif score >= total/2 %}
+    <h2>Keep Going</h2>
+{% else %}
+<h2>Try Again</h2>
+{% endif %}
+
+
+<a href="/">Back To Home</a>
+</body>
+</html>

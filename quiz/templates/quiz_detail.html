@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ quiz['title'] }}</title>
+</head>
+<body>
+    <h1>{{ quiz['title'] }}</h1>
+    <p>{{ quiz['description'] }}</p>
+
+    <form method="POST" action="/submit/{{ quiz['id'] }}">
+        {% for q in questions %}
+            <h3>{{ q['text'] }}</h3>
+            {% for opt in q['options'] %}
+                <label>
+                    <input type="radio" name="q{{ q['id'] }}" value="{{ opt['id'] }}">
+                    {{ opt['text'] }}
+                </label><br>
+            {% endfor %}
+        {% endfor %}
+        <button type="submit">Submit Quiz</button>
+    </form>
+</body>
+</html>

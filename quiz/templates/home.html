@@ -5,6 +5,16 @@
 </head>
 <body>
     <h1>Welcome to the Online Quiz Platform 🚀</h1>
-    <p>Day 1 setup successful!</p>
+    <h2>Available Quizzes</h2>
+    <ul>
+        {% for quiz in quizzes %}
+        <li>
+            <strong>{{quiz['title']}}</strong>-{{quiz['description']}}
+            <a href="/quiz/{{quiz['id']}}">Start Quiz</a>
+        </li>
+        {% else %}
+        <li>No Quizzes Available</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
