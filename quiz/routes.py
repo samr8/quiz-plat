@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect,url_for, session, flash
 from quiz.models import get_db
 quiz_bp=Blueprint('quiz',__name__,template_folder='templates')
 
@@ -47,4 +47,75 @@ def submit_quiz(quiz_id):
                 score += 1
 
     return render_template("result.html", score=score, total=total)
+
+# Signup
+@quiz_bp.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        db = get_db()
+        try:
+            db.execute("INSERT INTO Users (username, password) VALUES (?, ?)", (username, password))
+            db.commit()
+            flash("Account created successfully! Please login.", "success")
+            return redirect(url_for('quiz.login'))
+        except:
+            flash("Username already exists!", "error")
+
+    return render_template('signup.html')
+
+
+# Login
+@quiz_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        db = get_db()
+        user = db.execute("SELECT * FROM Users WHERE username = ? AND password = ?", (username, password)).fetchone()
+
+        if user:
+            session['user_id'] = user['id']
+            session['username'] = user['username']
+            flash("Welcome back, " + user['username'], "success")
+            return redirect(url_for('quiz.home'))
+        else:
+            flash("Invalid credentials!", "error")
+
+    return render_template('login.html')
+
+
+# Logout
+@quiz_bp.route('/logout')
+def logout():
+    session.clear()
+    flash("You have been logged out.", "info")
+    return redirect(url_for('quiz.home'))
+
+
+
+# existing routes...
+
+@quiz_bp.route('/register', methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        db = get_db()
+        try:
+            db.execute("INSERT INTO Users (username, password) VALUES (?, ?)", (username, password))
+            db.commit()
+            flash("Registration successful! Please login.")
+            return redirect(url_for("quiz.login"))
+        except Exception as e:
+            flash("Username already exists!")
+            return redirect(url_for("quiz.register"))
+
+    return render_template("register.html")
+
+
 

@@ -1,21 +1,27 @@
 <!DOCTYPE html>
-<>
+<html>
 <head>
-    <tile>
-        Quiz Result
-    </tile>
+    <title>Quiz Result</title>
 </head>
 <body>
-<p>Your Score:{{score}}/{{total}}</p>
-{% if score==tota %}
-    <h2>Perfect Score</h2>
-{% elif score >= total/2 %}
-    <h2>Keep Going</h2>
-{% else %}
-<h2>Try Again</h2>
-{% endif %}
+    <h1>Quiz Completed ✅</h1>
 
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-<a href="/">Back To Home</a>
+    <p>Your Score: <strong>{{ score }}</strong> / {{ total }}</p>
+
+    {% if session['user_id'] %}
+        <p>Well done, {{ session['username'] }}!</p>
+        <a href="{{ url_for('quiz.home') }}">Go back to quizzes</a>
+    {% else %}
+        <p><a href="{{ url_for('quiz.login') }}">Login</a> to save your results.</p>
+    {% endif %}
 </body>
 </html>

@@ -4,20 +4,32 @@
     <title>{{ quiz['title'] }}</title>
 </head>
 <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <h1>{{ quiz['title'] }}</h1>
     <p>{{ quiz['description'] }}</p>
 
-    <form method="POST" action="/submit/{{ quiz['id'] }}">
-        {% for q in questions %}
-            <h3>{{ q['text'] }}</h3>
-            {% for opt in q['options'] %}
-                <label>
-                    <input type="radio" name="q{{ q['id'] }}" value="{{ opt['id'] }}">
-                    {{ opt['text'] }}
-                </label><br>
+    {% if session['user_id'] %}
+        <form method="POST" action="/submit/{{ quiz['id'] }}">
+            {% for q in questions %}
+                <h3>{{ q['text'] }}</h3>
+                {% for opt in q['options'] %}
+                    <label>
+                        <input type="radio" name="q{{ q['id'] }}" value="{{ opt['id'] }}">
+                        {{ opt['text'] }}
+                    </label><br>
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
-        <button type="submit">Submit Quiz</button>
-    </form>
+            <button type="submit">Submit Quiz</button>
+        </form>
+    {% else %}
+        <p><a href="{{ url_for('quiz.login') }}">Login</a> to take this quiz.</p>
+    {% endif %}
 </body>
 </html>
