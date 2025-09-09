@@ -1,25 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Quiz Platform</title>
-</head>
 <body>
     <h1>Welcome to the Online Quiz Platform 🚀</h1>
 
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="flash {{ category }}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
-    {% if session['user_id'] %}
-        <p>Logged in as <strong>{{ session['username'] }}</strong> |
+    {% if user %}
+        <p>Logged in as <strong>{{ user['username'] }}</strong> |
            <a href="{{ url_for('quiz.logout') }}">Logout</a></p>
     {% else %}
-        <p><a href="{{ url_for('quiz.login') }}">Login</a> or
+        <p><a href="{{ url_for('quiz.login') }}">Login</a> |
            <a href="{{ url_for('quiz.register') }}">Register</a></p>
     {% endif %}
 
@@ -27,12 +13,11 @@
     <ul>
         {% for quiz in quizzes %}
         <li>
-            <strong>{{ quiz['title'] }}</strong> - {{ quiz['description'] }}
-            <a href="/quiz/{{ quiz['id'] }}">Start Quiz</a>
+            <strong>{{quiz['title']}}</strong> - {{quiz['description']}}
+            <a href="{{ url_for('quiz.quiz_detail', quiz_id=quiz['id']) }}">Start Quiz</a>
         </li>
         {% else %}
         <li>No Quizzes Available</li>
         {% endfor %}
     </ul>
 </body>
-</html>

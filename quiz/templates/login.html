@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Login</title>
-</head>
+<head><title>Login</title></head>
 <body>
-    <h1>Login</h1>
-    <form method="POST">
+    <h2>Login</h2>
+    <form method="POST" action="{{ url_for('quiz.login') }}">
         <label>Username:</label>
         <input type="text" name="username" required><br><br>
 
@@ -14,6 +12,6 @@
 
         <button type="submit">Login</button>
     </form>
-    <p>Don't have an account? <a href="{{ url_for('quiz.signup') }}">Signup</a></p>
+    <p>No account? <a href="{{ url_for('quiz.register') }}">Register here</a></p>
 </body>
 </html>

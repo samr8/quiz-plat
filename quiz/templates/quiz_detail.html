@@ -15,7 +15,7 @@
     <h1>{{ quiz['title'] }}</h1>
     <p>{{ quiz['description'] }}</p>
 
-    {% if session['user_id'] %}
+    {% if session['user'] %}
         <form method="POST" action="/submit/{{ quiz['id'] }}">
             {% for q in questions %}
                 <h3>{{ q['text'] }}</h3>
