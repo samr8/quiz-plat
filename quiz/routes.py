@@ -51,8 +51,6 @@ def login():
 
     return render_template("login.html")
 
-    return render_template("login.html")
-
 # Logout
 @quiz_bp.route('/logout')
 def logout():
@@ -105,9 +103,52 @@ def submit_quiz(quiz_id):
 
     # Save result in DB
     db.execute(
-        "INSERT INTO Results (user_id, quiz_id, score) VALUES (?, ?, ?)",
+        "INSERT INTO Results (user_id, quiz_id, score, taken_at) VALUES (?, ?, ?,datetime('now'))",
         (session["user"]["id"], quiz_id, score)
     )
     db.commit()
 
     return render_template("result.html", score=score, total=total, quiz_id=quiz_id)
+
+# View user results
+@quiz_bp.route('/my_results')
+def my_results():
+    if "user" not in session:
+        flash("Please log in to view your results.")
+        return redirect(url_for("quiz.login"))
+
+    db = get_db()
+    results = db.execute(
+        """
+        SELECT r.id, q.title, r.score,
+            (SELECT COUNT(*) FROM Questions WHERE quiz_id = q.id) as total,
+            r.quiz_id, r.taken_at
+        FROM Results r
+        JOIN Quizzes q ON r.quiz_id = q.id
+        WHERE r.user_id = ?
+        ORDER BY r.id DESC
+        """,
+        (session["user"]["id"],)
+    ).fetchall()
+
+    return render_template("my_results.html", results=results)
+
+# Leaderboard per quiz
+@quiz_bp.route("/quiz/<int:quiz_id>/leaderboard")
+def leaderboard(quiz_id):
+    db = get_db()
+    quiz = db.execute("SELECT * FROM Quizzes WHERE id = ?", (quiz_id,)).fetchone()
+    if not quiz:
+        return "Quiz not found", 404
+
+    # Fetch top scorers for this quiz
+    leaderboard = db.execute("""
+        SELECT Users.username, Results.score
+        FROM Results
+        JOIN Users ON Results.user_id = Users.id
+        WHERE Results.quiz_id = ?
+        ORDER BY Results.score DESC
+        LIMIT 10
+    """, (quiz_id,)).fetchall()
+
+    return render_template("leaderboard.html", quiz=quiz, leaderboard=leaderboard)

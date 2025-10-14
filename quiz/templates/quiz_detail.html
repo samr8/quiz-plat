@@ -1,35 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ quiz['title'] }}</title>
-</head>
-<body>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="flash {{ category }}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+{% extends "base.html" %}
 
-    <h1>{{ quiz['title'] }}</h1>
-    <p>{{ quiz['description'] }}</p>
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center">{{ quiz['title'] }}</h2>
+        <p class="text-muted text-center">{{ quiz['description'] }}</p>
 
-    {% if session['user'] %}
-        <form method="POST" action="/submit/{{ quiz['id'] }}">
+        {% if session['user'] %}
+        <form method="POST" action="{{ url_for('quiz.submit_quiz', quiz_id=quiz['id']) }}">
             {% for q in questions %}
-                <h3>{{ q['text'] }}</h3>
-                {% for opt in q['options'] %}
-                    <label>
-                        <input type="radio" name="q{{ q['id'] }}" value="{{ opt['id'] }}">
-                        {{ opt['text'] }}
-                    </label><br>
-                {% endfor %}
+                <div class="mb-4">
+                    <h5 class="fw-bold">Q{{ loop.index }}. {{ q['text'] }}</h5>
+                    <div class="ms-3">
+                        {% for opt in q['options'] %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       name="q{{ q['id'] }}" value="{{ opt['id'] }}" id="opt{{ opt['id'] }}">
+                                <label class="form-check-label" for="opt{{ opt['id'] }}">
+                                    {{ opt['text'] }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
             {% endfor %}
-            <button type="submit">Submit Quiz</button>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success px-4">Submit Quiz</button>
+            </div>
         </form>
-    {% else %}
-        <p><a href="{{ url_for('quiz.login') }}">Login</a> to take this quiz.</p>
-    {% endif %}
-</body>
-</html>
+        {% else %}
+            <p class="text-center">
+                <a href="{{ url_for('quiz.login') }}" class="btn btn-primary">Login</a>
+                to take this quiz.
+            </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

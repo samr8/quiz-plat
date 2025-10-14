@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}My Results{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">My Quiz Results</h1>
+
+    {% if results %}
+        <ul class="list-group">
+        {% for r in results %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ r['title'] }}</strong> —
+                    Score: {{ r['score'] }}/{{ r['total'] }}
+                    <br>
+                    <small class="text-muted">Taken at: {{ r['taken_at'] }}</small>
+                </div>
+                <a class="btn btn-sm btn-primary" href="{{ url_for('quiz.leaderboard', quiz_id=r['quiz_id']) }}">
+                    View Leaderboard
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">You haven’t taken any quizzes yet.</p>
+    {% endif %}
+{% endblock %}

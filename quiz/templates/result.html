@@ -1,9 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head><title>Result</title></head>
-<body>
-    <h2>Quiz Completed ✅</h2>
-    <p>Your Score: {{ score }}/{{ total }}</p>
-    <p><a href="{{ url_for('quiz.home') }}">Back to Home</a></p>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg text-center p-5">
+        <h2 class="mb-4 text-primary">Quiz Result</h2>
+        <h4>You scored:</h4>
+        <h1 class="display-3 fw-bold text-success">{{ score }}/{{ total }}</h1>
+
+        {% if score == total %}
+            <p class="text-success fw-bold">🎉 Perfect Score! Well done!</p>
+        {% elif score >= total/2 %}
+            <p class="text-warning fw-bold">👍 Good job! You passed the quiz.</p>
+        {% else %}
+            <p class="text-danger fw-bold">😢 Better luck next time. Keep practicing!</p>
+        {% endif %}
+
+        <div class="mt-4">
+            <a href="{{ url_for('quiz.home') }}" class="btn btn-primary me-2">🏠 Back to Home</a>
+            <a href="{{ url_for('quiz.quiz_detail', quiz_id=quiz_id) }}" class="btn btn-outline-success">🔁 Retake Quiz</a>
+            <a href="{{ url_for('quiz.my_results') }}" class="btn btn-outline-info">📊 My Results</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

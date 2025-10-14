@@ -1,23 +1,27 @@
-<body>
-    <h1>Welcome to the Online Quiz Platform 🚀</h1>
 
-    {% if user %}
-        <p>Logged in as <strong>{{ user['username'] }}</strong> |
-           <a href="{{ url_for('quiz.logout') }}">Logout</a></p>
-    {% else %}
-        <p><a href="{{ url_for('quiz.login') }}">Login</a> |
-           <a href="{{ url_for('quiz.register') }}">Register</a></p>
-    {% endif %}
 
-    <h2>Available Quizzes</h2>
-    <ul>
+
+{% extends "base.html" %}
+{% block title %}Home - Quiz Platform{% endblock %}
+<p>Welcome, {{ user['username'] }} </p>
+
+{% block content %}
+    <h1 class="mb-4">Available Quizzes</h1>
+    <div class="row">
         {% for quiz in quizzes %}
-        <li>
-            <strong>{{quiz['title']}}</strong> - {{quiz['description']}}
-            <a href="{{ url_for('quiz.quiz_detail', quiz_id=quiz['id']) }}">Start Quiz</a>
-        </li>
-        {% else %}
-        <li>No Quizzes Available</li>
+            <div class="col-md-6 mb-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ quiz['title'] }}</h5>
+                        <p class="card-text">{{ quiz['description'] }}</p>
+                        <a href="{{ url_for('quiz.quiz_detail', quiz_id=quiz['id']) }}" class="btn btn-primary">Take Quiz</a>
+                        <a href="{{ url_for('quiz.leaderboard', quiz_id=quiz['id']) }}" class="btn btn-outline-secondary">Leaderboard</a>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
+{% endblock %}
+
+
 </body>
